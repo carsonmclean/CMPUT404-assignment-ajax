@@ -81,12 +81,10 @@ def hello():
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
-    # amirouche
-    # http://stackoverflow.com/questions/32496906/how-to-check-request-method-inside-python-class
     json_data = flask_post_json()
-    for i in json_data:
-        myWorld.update(entity, i, json_data[i])
-    return jsonify(myWorld.world()), 200
+    for key,value in json_data.items():
+        myWorld.update(entity, key, value)
+    return json.dumps(myWorld.get(entity))
 
 @app.route("/world", methods=['POST','GET'])
 def world():
