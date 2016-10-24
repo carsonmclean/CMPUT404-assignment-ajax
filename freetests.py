@@ -53,7 +53,7 @@ class ServerTestCase(unittest.TestCase):
         v = 'T'+str(random.randint(1,1000000))
         r = self.app.get(('/entity/%s' % v))
         self.assertTrue(r.status_code == 200, "Code not 200!")
-        self.assertTrue(r.data == '{}', "Not empty? %s" % r.data)
+        self.assertTrue(json.dumps(json.loads(r.data)) == json.dumps(json.loads('{}')), "Not empty? %s" % r.data)
         d = {'x':2, 'y':3}
         r = self.app.put(('/entity/%s' % v),data=json.dumps(d))
         self.assertTrue(r.status_code == 200, "PUT Code not 200!")
