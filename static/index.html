@@ -74,10 +74,19 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
 // Kirzilla
 // http://stackoverflow.com/questions/3511200/new-image-how-to-know-if-image-100-loaded-or-not
 // Helped understand how to make an Image in JS
-var smileyImg = new Image();
+var smileyImg = new Image(),
+    startImg = new Image(),
+    stopImg = new Image();
+
 // East718
 // https://commons.wikimedia.org/wiki/Category:SVG_smilies#/media/File:718smiley.svg
 smileyImg.src = "./smiley.svg";
+// Gautier Antoine
+// http://www.clker.com/clipart-start-2.html
+startImg.src = "./start.svg";
+// Public Domain.
+// https://commons.wikimedia.org/wiki/File:Canada_Stop_sign.svg
+stopImg.src = "./stop.svg";
 
 world = {};
 
@@ -93,6 +102,10 @@ function drawCircle(context,entity) {
       if (iconType === "smileyImg") {
         // Adjust positioning so image directly under mouse and make image proper size
         context.drawImage(smileyImg,x-25,y-25,50,50);
+      } else if (iconType === "startImg") {
+        context.drawImage(startImg,x-45,y-45,90,90);
+      } else if (iconType === "stopImg") {
+        context.drawImage(stopImg,x-45,y-45,90,90);
       } else {
         // keep original style/rendering incase something goes wrong
         beginPath();
@@ -290,16 +303,15 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'icon':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'icon':'startImg'});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'icon':'red'});
+    addEntityWithoutName({'x':x,'y':y,'icon':'stopImg'});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'icon':'smileyImg',
-                          'radius':10});
+    addEntityWithoutName({'x':x,'y':y,'icon':'smileyImg'});
 });
 
 
