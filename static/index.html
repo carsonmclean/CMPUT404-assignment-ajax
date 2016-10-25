@@ -71,21 +71,38 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     xhr.send(JSON.stringify(objects));
 }
 
+// Kirzilla
+// http://stackoverflow.com/questions/3511200/new-image-how-to-know-if-image-100-loaded-or-not
+// Helped understand how to make an Image in JS
+var smileyImg = new Image();
+// East718
+// https://commons.wikimedia.org/wiki/Category:SVG_smilies#/media/File:718smiley.svg
+smileyImg.src = "./smiley.svg";
 
 world = {};
 
 //XXX: TODO Make this prettier!
 function drawCircle(context,entity) {
     with(context) {
+      var x = entity["x"];
+      var y = entity["y"];
+      iconType = entity["icon"];
+
+      // W3Schools
+      // http://www.w3schools.com/tags/canvas_drawimage.asp
+      if (iconType === "smileyImg") {
+        // Adjust positioning so image directly under mouse and make image proper size
+        context.drawImage(smileyImg,x-25,y-25,50,50);
+      } else {
+        // keep original style/rendering incase something goes wrong
         beginPath();
         lineWidth = 3;
-        var x = entity["x"];
-        var y = entity["y"];
         //moveTo(x,y);
-        fillStyle = entity["colour"];
+        iconType = entity["colour"];
         strokeStyle = fillStyle;
         arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);
         stroke();
+      }
     }
 }
 
@@ -273,15 +290,15 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'icon':'blue'});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y,'icon':'red'});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
+    addEntityWithoutName({'x':x,'y':y,'icon':'smileyImg',
                           'radius':10});
 });
 
