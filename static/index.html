@@ -31,7 +31,6 @@ var context = canvas.getContext("2d");
 var W = canvas.width  = window.innerWidth-6;
 var H = canvas.height = window.innerHeight-50;
 
-
 function sendJSONXMLHTTPRequest(url, objects, callback) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
@@ -156,10 +155,16 @@ function getPosition(e) {
 
 function addEntity(entity, data) {
     world[entity] = data;
-    drawNextFrame(); // (but should we?)
+    //drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
-    // No need to do anything with new entity, so null callback.
-    sendJSONXMLHTTPRequest("/entity/"+entity, data, null)
+    // Calling drawNextFrame() improves local draw performance by letting update()
+    // and therefore drawFrame() know there is new data in the world (as added above
+    // this comment). So, really, when drawing locally, we already have all the draw data
+    // in world immediately and we are unneccesarily polling /world. Only need to get
+    // diffs of world that have changes made by other clients. Something to address in v2.
+    sendJSONXMLHTTPRequest("/entity/"+entity, data, function() {
+      drawNextFrame();
+    });
 }
 
 var counter = 0;
@@ -287,6 +292,15 @@ function update() {
     // When AJAX call returns, we update the world to the new_world.
     // Very performance internsive, causes some lag.
     sendJSONXMLHTTPRequest('/world',  null, function(new_world) {
+      // Use a callback because we only want to drawNextFrame when AJAX completes
+
+      // Tried doing some performance improvements with mixed results
+      // Tried preventing redrawing when no changes to canvas
+      // if (world !== new_world) {
+        // world = new_world;
+        // drawNextFrame();
+      // }
+
       world = new_world;
       drawNextFrame();
     });
